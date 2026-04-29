@@ -26,7 +26,10 @@ L.Control.Coordinates = L.Control.extend({
 		//leaflet marker type
 		markerType: L.marker,
 		//leaflet marker properties
-		markerProps: {}
+		markerProps: {},
+		//optional Leaflet Icon instance for the marker
+		//(equivalent to passing markerProps: { icon: ... })
+		markerIcon: null
 	},
 
 	onAdd: function(map) {
@@ -268,7 +271,13 @@ L.Control.Coordinates = L.Control.extend({
 	},
 
 	_createNewMarker: function() {
-		return this.options.markerType(null, this.options.markerProps);
+		var props = this.options.markerProps || {};
+		// Clone so we never mutate the object the user passed in
+		var markerProps = L.Util.extend({}, props);
+		if (this.options.markerIcon) {
+			markerProps.icon = this.options.markerIcon;
+		}
+		return this.options.markerType(null, markerProps);
 	}
 
 });
